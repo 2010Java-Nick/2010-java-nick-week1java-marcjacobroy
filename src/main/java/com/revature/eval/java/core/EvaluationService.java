@@ -4,6 +4,7 @@ import java.time.temporal.Temporal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 public class EvaluationService {
 
 	/**
@@ -242,12 +243,27 @@ public class EvaluationService {
 	 * binary search is a dichotomic divide and conquer search algorithm.
 	 * 
 	 */
-	static class BinarySearch<T> {
+	static class BinarySearch<T extends Comparable<T>> {
 		private List<T> sortedList;
 
 		public int indexOf(T t) {
-			// TODO Write an implementation for this method declaration
-			return 0;
+			
+			int low = 0;
+			int high = this.sortedList.size();
+			int mid; 
+			while (low < high) {
+				mid = (low + high) / 2;
+				T curr = this.sortedList.get(mid);
+				if (curr == t) {
+					return mid;
+				} else if (curr.compareTo(t) == 1) {
+					high = mid;
+				} else {
+					low = mid;
+				}
+				
+			}
+			throw new IllegalArgumentException("The queried element doesn't exist in the list");
 		}
 
 		public BinarySearch(List<T> sortedList) {
@@ -282,9 +298,32 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	
+	/**
+	 * Below we assume that a vowel letter always means a vowel sound at the 
+	 * beginning of a word. This isn't actually true, however, as words such 
+	 * as university (yuniversity) demonstrate. 
+	 * @return
+	 */
+	public Boolean startsWithVowel(String string) {
+		return (string.charAt(0) == 'a' || string.charAt(0) == 'e' || string.charAt(0) == 'i' || string.charAt(0) == 'o' || string.charAt(0) == 'u');
+	}
+	
 	public String toPigLatin(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		string = string.toLowerCase();
+		
+		if (this.startsWithVowel(string)) {
+			return string.concat("ay");
+		} else if (string.charAt(0) == 'q' && string.charAt(1) == 'u') {
+			return string.substring(2).concat("quay");
+		} else {
+			String suffix = "";
+			while (!this.startsWithVowel(string)) {
+				suffix = suffix.concat(String.valueOf(string.charAt(0)));
+				string = string.substring(1);
+			}
+			return string.concat(suffix).concat("ay");
+		}
 	}
 
 	/**
