@@ -444,7 +444,6 @@ public class EvaluationService {
 			}
 			return encoded;
 		}
-
 	}
 
 	/**
@@ -459,9 +458,35 @@ public class EvaluationService {
 	 * @param i
 	 * @return
 	 */
+	
+	public boolean isDivisibleBy(int i, int j) {
+		return (i % j == 0); 
+	}
+	
 	public int calculateNthPrime(int i) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		if (i < 1) {
+			throw new IllegalArgumentException("Only accepts positive integers");
+		}
+		List<Integer> primes = new ArrayList<Integer>();
+		primes.add(2);
+		int j; 
+		while (primes.size() < i) {
+			j = primes.get(primes.size() - 1);
+			while (true) {
+				j++;
+				boolean isPrime = true;
+				for (int k = 0; k < primes.size(); k++) {
+					if (this.isDivisibleBy(j, primes.get(k))){
+						isPrime = false;
+					}
+				}
+				if (isPrime) {
+					primes.add(j);
+					break;
+				}
+			}
+		}
+		return primes.get(primes.size() - 1);
 	}
 
 	/**
