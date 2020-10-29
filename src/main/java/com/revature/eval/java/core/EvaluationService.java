@@ -196,16 +196,14 @@ public class EvaluationService {
 	 * @return
 	 */
 	public Map<String, Integer> wordCount(String string) {
-		string = string.replaceAll("\n", " ");
+		string = string.replaceAll("\n", "");
 		string = string.replaceAll("[^a-zA-Z]", " ");
 		String[] arr = string.split(" ");
-		
 		Map<String, Integer> counts = new HashMap<String, Integer>();
 		for (int i = 0; i < arr.length; i++) {
 			counts.putIfAbsent(arr[i], 0);
 			counts.replace(arr[i], counts.get(arr[i]) + 1);
 		}
-		
 		return counts;
 	}
 
