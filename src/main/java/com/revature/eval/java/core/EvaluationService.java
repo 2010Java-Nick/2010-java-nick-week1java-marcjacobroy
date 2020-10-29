@@ -311,19 +311,25 @@ public class EvaluationService {
 	
 	public String toPigLatin(String string) {
 		string = string.toLowerCase();
+		String[] phrase = string.split(" ");
 		
-		if (this.startsWithVowel(string)) {
-			return string.concat("ay");
-		} else if (string.charAt(0) == 'q' && string.charAt(1) == 'u') {
-			return string.substring(2).concat("quay");
-		} else {
-			String suffix = "";
-			while (!this.startsWithVowel(string)) {
-				suffix = suffix.concat(String.valueOf(string.charAt(0)));
-				string = string.substring(1);
+		for (int i = 0; i < phrase.length; i++) {
+			String s = phrase[i];
+			if (this.startsWithVowel(s)) {
+				s = s.concat("ay");
+			} else if (s.charAt(0) == 'q' && s.charAt(1) == 'u') {
+				s = s.substring(2).concat("quay");
+			} else {
+				String suffix = "";
+				while (!this.startsWithVowel(s)) {
+					suffix = suffix.concat(String.valueOf(s.charAt(0)));
+					s = s.substring(1);
+				}
+				s = s.concat(suffix).concat("ay");
 			}
-			return string.concat(suffix).concat("ay");
+			phrase[i] = s;
 		}
+		return String.join(" ", phrase);
 	}
 
 	/**
