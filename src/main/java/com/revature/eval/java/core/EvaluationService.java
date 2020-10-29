@@ -4,6 +4,7 @@ import java.time.temporal.Temporal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 public class EvaluationService {
 
@@ -31,7 +32,11 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String acronym(String phrase) {
-		phrase = phrase.replaceAll("\\p{Punct}", " ");
+		// The punctuation "-" is used to separate two words in a
+		// pseudo-compound word construction, so it is handled 
+		// separately from other punctuation. 
+		phrase = phrase.replaceAll("-", " ");
+		phrase = phrase.replaceAll("\\p{Punct}", "");
 		String[] split_phrase = phrase.split(" ");
 		char[] acr = new char[split_phrase.length];
 		for (int i = 0; i < split_phrase.length; i++){
@@ -254,7 +259,7 @@ public class EvaluationService {
 			while (low < high) {
 				mid = (low + high) / 2;
 				T curr = this.sortedList.get(mid);
-				if (curr == t) {
+				if (curr.compareTo(t) == 0) {
 					return mid;
 				} else if (curr.compareTo(t) == 1) {
 					high = mid;
@@ -348,8 +353,14 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isArmstrongNumber(int input) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		char[] digits = (Integer.toString(input)).toCharArray();
+		int numPlaces = digits.length;
+		int count = 0;
+		for (char c : digits) {
+			count += (int) Math.pow(Double.valueOf(Character.getNumericValue(c)), Double.valueOf(numPlaces));
+		}
+		
+		return (count == input);
 	}
 
 	/**
@@ -362,9 +373,23 @@ public class EvaluationService {
 	 * @param l
 	 * @return
 	 */
+	// Is x divisible by y? 
+	public boolean isDivisibleBy(long x, long y) {
+		return (x == (x / y * y));
+	}
+	
 	public List<Long> calculatePrimeFactorsOf(long l) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		List<Long> primeFactors = new ArrayList<Long>();
+		long i = 2L;
+		while (l >= i) {
+			if (this.isDivisibleBy(l, i)) {
+				primeFactors.add(i);
+				l = l / i;
+			} else {
+				i++;
+			}
+		}
+		return (List<Long>) primeFactors;
 	}
 
 	/**
@@ -402,8 +427,22 @@ public class EvaluationService {
 		}
 
 		public String rotate(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			int upperA = 65;
+			int lowerA = 97;
+			String encoded = "";
+			for (int i = 0; i < string.length(); i++) {
+				char c = string.charAt(i);
+				char nextChar;
+				if (!Character.isLetter(c)) {
+					nextChar = c;
+				} else {
+					int ascii = (int) c;
+					int a = Character.isUpperCase(c) ? upperA : lowerA;
+					nextChar = (char) ((((int) ascii - a + this.key) % 26) + a);
+				}
+				encoded = encoded.concat(String.valueOf(nextChar));
+			}
+			return encoded;
 		}
 
 	}
