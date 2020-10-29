@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
+
 public class EvaluationService {
 
 	/**
@@ -425,22 +426,23 @@ public class EvaluationService {
 			super();
 			this.key = key;
 		}
-
+		
+		
+		public char rotateChar(char c) {
+			if (!Character.isLetter(c)) {
+				return c;
+			} else {
+				int upperA = 65;
+				int lowerA = 97;
+				int ascii = (int) c;
+				int a = Character.isUpperCase(c) ? upperA : lowerA;
+				return ((char) ((((int) ascii - a + this.key) % 26) + a));
+			}
+		}
 		public String rotate(String string) {
-			int upperA = 65;
-			int lowerA = 97;
 			String encoded = "";
 			for (int i = 0; i < string.length(); i++) {
-				char c = string.charAt(i);
-				char nextChar;
-				if (!Character.isLetter(c)) {
-					nextChar = c;
-				} else {
-					int ascii = (int) c;
-					int a = Character.isUpperCase(c) ? upperA : lowerA;
-					nextChar = (char) ((((int) ascii - a + this.key) % 26) + a);
-				}
-				encoded = encoded.concat(String.valueOf(nextChar));
+				encoded = encoded.concat(String.valueOf(this.rotateChar(string.charAt(i))));
 			}
 			return encoded;
 		}
@@ -521,9 +523,37 @@ public class EvaluationService {
 		 * @param string
 		 * @return
 		 */
+		public static List<String> Split(String string, int i){
+			List<String> ans = new ArrayList<String>((string.length() + i - 1) / i);
+			for (int j = 0; j < string.length(); j += i) {
+				ans.add(string.substring(j, Math.min(string.length(), j + i)));
+			}
+			return ans; 
+		}
+		
+		public static int mapToAlphabet(char c) {
+			int upperA = 65;
+			int lowerA = 97;
+			int ascii = (int) c;
+			int a = Character.isUpperCase(c) ? upperA : lowerA;
+			return (ascii - a); 
+		}
+		
+		public static String rotate(String string) {
+			String ans = "";
+			for (int i = 0; i < string.length(); i++) {
+				char c = string.charAt(i);
+				int n = mapToAlphabet(c);
+				RotationalCipher cipher = new RotationalCipher((25 - 2 * n));
+				ans = ans.concat(cipher.rotate(Character.toString(c)));
+			}
+			return ans;
+		}
 		public static String encode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			string = rotate(string.replaceAll("\\p{Punct}", "").toLowerCase()).replaceAll(" ", "");
+			List<String> l = Split(string, 5);
+			String ans = String.join(" ", l);
+			return ans;
 		}
 
 		/**
@@ -533,8 +563,7 @@ public class EvaluationService {
 		 * @return
 		 */
 		public static String decode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			return (encode(string).replaceAll(" ", ""));
 		}
 	}
 
