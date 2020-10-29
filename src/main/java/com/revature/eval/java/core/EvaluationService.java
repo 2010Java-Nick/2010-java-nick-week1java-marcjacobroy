@@ -590,8 +590,26 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isValidIsbn(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		int END = 9;
+		string = string.replaceAll("-", "");
+		if (string.length() != 10) {
+			return false; 
+		}
+		
+		int ctr = 0;
+		for (int i = 0; i < string.length() - 1; i++) {
+			if (!Character.isDigit(string.charAt(i))) {
+				return false;
+			}
+			
+			int j = (string.charAt(i) == 'X') ? 10 : Character.getNumericValue(string.charAt(i));
+			ctr += j * (10 - i);
+		}
+		if (!Character.isDigit(string.charAt(9)) && string.charAt(9) != 'X') {
+			return false;
+		}
+		int check = (string.charAt(END) == 'X') ? 10 : Character.getNumericValue(string.charAt(END));
+		return ((ctr + check) % 11 == 0);
 	}
 
 	/**
@@ -607,9 +625,24 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	public int sumArray(int[] nums) {
+		int ctr = 0;
+		for (int i = 0; i < nums.length; i++) {
+			ctr += nums[i];
+		}
+		return ctr;
+	}
 	public boolean isPangram(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		string = string.toLowerCase();
+		int lowerA = 97;
+		int[] check = new int[26];
+		for (int i = 0; i < string.length(); i++) {
+			if (Character.isLetter(string.charAt(i))){
+				int ascii = (int) string.charAt(i);
+				check[ascii - lowerA] = 1;
+			}
+		}
+		return (this.sumArray(check) == 26);
 	}
 
 	/**
