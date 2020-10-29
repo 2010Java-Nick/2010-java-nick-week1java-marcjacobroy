@@ -1,9 +1,9 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 public class EvaluationService {
 
 	/**
@@ -30,10 +30,11 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String acronym(String phrase) {
+		phrase = phrase.replaceAll("\\p{Punct}", " ");
 		String[] split_phrase = phrase.split(" ");
-		char[] acr = new char[split_phrase.length()];
+		char[] acr = new char[split_phrase.length];
 		for (int i = 0; i < split_phrase.length; i++){
-			acr[i] = split_phrase[i].chatAt(0);
+			acr[i] = Character.toUpperCase(split_phrase[i].charAt(0));
 		}
 		return new String(acr);
 		
@@ -87,20 +88,28 @@ public class EvaluationService {
 		public void setSideThree(double sideThree) {
 			this.sideThree = sideThree;
 		}
+		
+		private int numEqualSides() {
+			if (this.sideOne == this.sideTwo && this.sideOne == this.sideThree){
+				return 3;
+			} else if (this.sideOne == this.sideTwo || this.sideOne == this.sideThree || this.sideTwo == this.sideThree) {
+				return 2;
+			} else {
+				return 0;
+			}
+			
+		}
 
 		public boolean isEquilateral() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			return (this.numEqualSides() == 3);
 		}
 
 		public boolean isIsosceles() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			return (this.numEqualSides() >= 2);
 		}
 
 		public boolean isScalene() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			return (this.numEqualSides() == 0);
 		}
 
 	}
@@ -121,8 +130,18 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int getScrabbleScore(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		HashMap<Character, Integer> scores = new HashMap<Character, Integer>();
+		char[][] lookup = {{ 'A', 'E', 'I', 'O', 'U', 'L', 'N', 'R', 'S', 'T' }, { 'D', 'G' }, { 'B', 'C', 'M', 'P' }, { 'F', 'H', 'V', 'W', 'Y' }, { 'K' }, {}, {}, {'J', 'X'}, {}, {'Q', 'Z'}}; 
+		for (int i = 0; i < lookup.length; i++) {
+			for (int j = 0; j < lookup[i].length; j++) {
+				scores.put(lookup[i][j], i + 1); 
+			}
+		}
+		int curr_score = 0;
+		for (int i = 0; i < string.length(); i++) {
+			curr_score += scores.get(Character.toUpperCase(string.charAt(i)));
+		}
+		return curr_score;
 	}
 
 	/**
@@ -157,8 +176,14 @@ public class EvaluationService {
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
 	public String cleanPhoneNumber(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		string = string.replaceAll( "[^\\d]", "" );
+		if (string.length() == 10) {
+			return string;
+		} else if (string.length() == 11 && string.charAt(0) == '1') {
+			return string.substring(1);
+		} else {
+			throw new IllegalArgumentException("Invalid phone number");
+		}
 	}
 
 	/**
@@ -171,8 +196,17 @@ public class EvaluationService {
 	 * @return
 	 */
 	public Map<String, Integer> wordCount(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		string = string.replaceAll("\n", " ");
+		string = string.replaceAll("[^a-zA-Z]", " ");
+		String[] arr = string.split(" ");
+		
+		Map<String, Integer> counts = new HashMap<String, Integer>();
+		for (int i = 0; i < arr.length; i++) {
+			counts.putIfAbsent(arr[i], 0);
+			counts.replace(arr[i], counts.get(arr[i]) + 1);
+		}
+		
+		return counts;
 	}
 
 	/**
