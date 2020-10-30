@@ -796,8 +796,30 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int solveWordProblem(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		string = string.replaceAll("\\?", "");
+		String[] parts = string.split(" ");
+		for (int i = 0; i < parts.length; i++) {
+			System.out.println(parts[i]);
+		}
+		
+		if (parts.length != 5 && parts.length != 6) {
+			throw new IllegalArgumentException("Unable to parse request");
+		}
+		int left = Integer.parseInt(parts[2]);
+		int right = Integer.parseInt(parts[parts.length - 1]);
+		String op = parts[3];
+		switch (op) {
+		case "plus":
+			return (left + right);
+		case "minus":
+			return (left - right);
+		case "multiplied":
+			return (left * right);
+		case "divided":
+			return (left / right);
+		default:
+			throw new IllegalArgumentException("Unable to parse request");
+		} 
 	}
 
 }
