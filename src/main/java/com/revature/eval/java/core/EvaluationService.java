@@ -1,7 +1,11 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
@@ -376,7 +380,7 @@ public class EvaluationService {
 	 */
 	// Is x divisible by y? 
 	public boolean isDivisibleBy(long x, long y) {
-		return (x == (x / y * y));
+		return (x % y == 0);
 	}
 	
 	public List<Long> calculatePrimeFactorsOf(long l) {
@@ -654,8 +658,13 @@ public class EvaluationService {
 	 * @return
 	 */
 	public Temporal getGigasecondDate(Temporal given) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		try {
+			return (given.plus(1000000000L, ChronoUnit.SECONDS));
+		}
+		catch (Exception UnsupportedTemporalTypeException){
+			LocalDateTime modified = ((LocalDate) given).atStartOfDay();
+			return (modified.plus(1000000000L, ChronoUnit.SECONDS));
+		}
 	}
 
 	/**
@@ -671,9 +680,24 @@ public class EvaluationService {
 	 * @param set
 	 * @return
 	 */
+	
+	
+	
 	public int getSumOfMultiples(int i, int[] set) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		ArrayList<Integer> s = new ArrayList<Integer>();
+		for (int j = 0; j < i ; j ++) {
+			for (int x : set) {
+				if (this.isDivisibleBy(j, x) && !s.contains(j)) {
+					s.add(j);
+					break;
+				}
+			}
+		}
+		int ctr = 0;
+		for (int x : s) {
+			ctr += x;
+		}
+		return ctr;
 	}
 
 	/**
@@ -712,9 +736,36 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	public boolean isAllDigit(String string) {
+		for (int i = 0; i < string.length(); i++) {
+			if (!Character.isDigit(string.charAt(i))){
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	public boolean isLuhnValid(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		string = string.replaceAll(" ", "");
+		if (!this.isAllDigit(string)){
+			return false;
+		}
+		
+		int[] nums = new int[string.length()];
+		for (int i = 0; i < string.length(); i++) {
+			if (i % 2 == 0) {
+				nums[i] = Character.getNumericValue(string.charAt(i));
+			} else {
+				int times = Character.getNumericValue(string.charAt(i)) * 2;
+				nums[i] = (times > 9) ? (times - 9) : times;
+			}
+		}
+		
+		int ctr = 0;
+		for (int i = 0; i < nums.length; i++) {
+			ctr += nums[i];
+		}
+		return (ctr % 10 == 0);
 	}
 
 	/**
